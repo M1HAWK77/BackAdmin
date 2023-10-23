@@ -5,7 +5,7 @@ import { getProducts, newProduct } from '../controllers/product.controller';
 const router= Router();
 //routes
 router.get('/', getProducts);
-router.post('/newProduct', newProduct);
+router.post('/', newProduct);
 
 //export generated routes
 export default router;

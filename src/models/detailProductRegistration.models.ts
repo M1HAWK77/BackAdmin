@@ -3,10 +3,10 @@ import { DataTypes } from 'sequelize';
 
 
 export const DetailRegistration = connection.define('detailProductRegistration', {
-    idOutputBelong: {
+    idRegistrationBelong: { //fk
         type: DataTypes.INTEGER,
     },
-    idProductBelong: {
+    idProductBelong: { //fk
         type: DataTypes.STRING(30),
         allowNull: false
     },

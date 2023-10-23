@@ -7,7 +7,7 @@ exports.DetailRegistration = void 0;
 const connection_db_1 = __importDefault(require("../db/connection.db"));
 const sequelize_1 = require("sequelize");
 exports.DetailRegistration = connection_db_1.default.define('detailProductRegistration', {
-    idOutputBelong: {
+    idRegistrationBelong: {
         type: sequelize_1.DataTypes.INTEGER,
     },
     idProductBelong: {

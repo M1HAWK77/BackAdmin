@@ -5,7 +5,8 @@ import routesProduct from '../routes/product.routes';
 import routesUser from '../routes/user.routes';
 import routesCategories from '../routes/category.routes';
 import routesSuppliers from '../routes/supplier.routes';
-import { Category } from './category.models';
+//creation of tables
+import {User,Category,DetailOutput,DetailRegistration,Product,ProductOutput,ProductRegistration,Supplier} from './tblAssociation.models';
 
 class Server{
 
@@ -46,7 +47,16 @@ class Server{
     sequel rules*/
     async dbConnect(){
         try {
+            //These lines of code the first time create my tables
+            await User.sync();
+            await Supplier.sync();
             await Category.sync();
+            await Product.sync();
+            await ProductRegistration.sync();
+            await ProductOutput.sync();
+            await DetailRegistration.sync();
+            await DetailOutput.sync();
+
         } catch (error) {
             console.log('unable to connect to the database:',error);
         }

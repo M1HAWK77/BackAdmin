@@ -7,7 +7,7 @@ export const Product = connection.define('product', {
         type: DataTypes.STRING(30),
         primaryKey: true
     },
-    idCatBelong: {
+    idCatBelong: { //fk
         type: DataTypes.STRING(30),
         allowNull: false
     },

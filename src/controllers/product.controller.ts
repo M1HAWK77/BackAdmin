@@ -1,8 +1,12 @@
 import {Request, Response} from 'express';
+import { Product } from '../models/product.models';
 
 
 //@getProducts: return all products from the database
-export const getProducts= (req: Request, res:Response)=>{
+export const getProducts= async (req: Request, res:Response)=>{
+
+    const productsList= await Product.findAll();
+
     res.json({
         msg: "Get Products"
     });

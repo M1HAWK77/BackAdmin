@@ -3,6 +3,6 @@ import { getSuppliers, newSupplier } from '../controllers/supplier.controller';
 
 const router= Router();
 router.get('/', getSuppliers);
-router.post('/newSupplier', newSupplier);
+router.post('/', newSupplier);
 
 export default router;

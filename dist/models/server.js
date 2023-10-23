@@ -19,7 +19,8 @@ const product_routes_1 = __importDefault(require("../routes/product.routes"));
 const user_routes_1 = __importDefault(require("../routes/user.routes"));
 const category_routes_1 = __importDefault(require("../routes/category.routes"));
 const supplier_routes_1 = __importDefault(require("../routes/supplier.routes"));
-const category_models_1 = require("./category.models");
+//creation of tables
+const tblAssociation_models_1 = require("./tblAssociation.models");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -52,7 +53,15 @@ class Server {
     dbConnect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield category_models_1.Category.sync();
+                //These lines of code the first time create my tables
+                yield tblAssociation_models_1.User.sync();
+                yield tblAssociation_models_1.Supplier.sync();
+                yield tblAssociation_models_1.Category.sync();
+                yield tblAssociation_models_1.Product.sync();
+                yield tblAssociation_models_1.ProductRegistration.sync();
+                yield tblAssociation_models_1.ProductOutput.sync();
+                yield tblAssociation_models_1.DetailRegistration.sync();
+                yield tblAssociation_models_1.DetailOutput.sync();
             }
             catch (error) {
                 console.log('unable to connect to the database:', error);

@@ -9,6 +9,7 @@ const sequelize_1 = require("sequelize");
 exports.ProductOutput = connection_db_1.default.define('productOutput', {
     idOutput: {
         type: sequelize_1.DataTypes.INTEGER,
+        primaryKey: true,
         autoIncrement: true
     },
     dniUserOutput: {

@@ -9,6 +9,7 @@ const sequelize_1 = require("sequelize");
 exports.ProductRegistration = connection_db_1.default.define('productRegistration', {
     idReg: {
         type: sequelize_1.DataTypes.INTEGER,
+        primaryKey: true,
         autoIncrement: true
     },
     dniUserReceive: {

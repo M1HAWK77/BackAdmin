@@ -5,6 +5,7 @@ import { DataTypes } from 'sequelize';
 export const ProductOutput = connection.define('productOutput', {
     idOutput: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         autoIncrement: true
     },
     dniUserOutput: {

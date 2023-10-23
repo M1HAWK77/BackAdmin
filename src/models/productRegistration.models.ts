@@ -5,6 +5,7 @@ import { DataTypes } from 'sequelize';
 export const ProductRegistration = connection.define('productRegistration', {
     idReg: {
         type: DataTypes.INTEGER,
+        primaryKey:true,
         autoIncrement: true
     },
     dniUserReceive: {
