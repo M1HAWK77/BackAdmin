@@ -19,6 +19,14 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*Destructuring req.body(similar to type req.body.userName), in my json i gonna received
     the params that i need ex. dniUser- nameUser*/
     const { dniUser, nameUser, lastNameUser, userName, passwordUser, userRole } = req.body;
+    //validate if user exist on the database
+    const user = yield user_models_1.User.findOne({ where: { dniUser: dniUser } });
+    if (user) {
+        return res.status(400).json({
+            msg: "The user already exist with that dni"
+        });
+    }
+    console.log("Continue");
     //Encrypt password
     const hashedPassword = yield bcrypt_1.default.hash(passwordUser, 10);
     try {
@@ -43,11 +51,25 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.newUser = newUser;
-const loginUser = (req, res) => {
-    const { body } = req;
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userName, passwordUser } = req.body;
+    //validate if user exist on the database, any accept all
+    const userExist = yield user_models_1.User.findOne({ where: { userName: userName } });
+    if (!userExist) {
+        return res.status(400).json({
+            msg: `We can't find a user with that name ${userName}`
+        });
+    }
+    //validate password
+    const passwordValidator = yield bcrypt_1.default.compare(passwordUser, userExist.passwordUser);
+    console.log(passwordValidator);
+    if (!passwordValidator) {
+        return res.status(400).json({
+            msg: "Wrong password"
+        });
+    }
     res.json({
         msg: 'Login User',
-        body
     });
-};
+});
 exports.loginUser = loginUser;
