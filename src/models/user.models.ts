@@ -20,7 +20,7 @@ export const User = connection.define('user', {
         allowNull: false
     },
     passwordUser: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(60),
         allowNull: false
     },
     userRole: {

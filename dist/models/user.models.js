@@ -24,7 +24,7 @@ exports.User = connection_db_1.default.define('user', {
         allowNull: false
     },
     passwordUser: {
-        type: sequelize_1.DataTypes.STRING(30),
+        type: sequelize_1.DataTypes.STRING(60),
         allowNull: false
     },
     userRole: {

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.newUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_models_1 = require("../models/user.models");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*Destructuring req.body(similar to type req.body.userName), in my json i gonna received
     the params that i need ex. dniUser- nameUser*/
@@ -26,7 +27,6 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             msg: "The user already exist with that dni"
         });
     }
-    console.log("Continue");
     //Encrypt password
     const hashedPassword = yield bcrypt_1.default.hash(passwordUser, 10);
     try {
@@ -60,7 +60,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             msg: `We can't find a user with that name ${userName}`
         });
     }
+    console.log(passwordUser);
+    console.log(userExist.passwordUser);
     //validate password
+    //return true or false
     const passwordValidator = yield bcrypt_1.default.compare(passwordUser, userExist.passwordUser);
     console.log(passwordValidator);
     if (!passwordValidator) {
@@ -68,8 +71,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             msg: "Wrong password"
         });
     }
-    res.json({
-        msg: 'Login User',
-    });
+    //generate token 
+    const token = jsonwebtoken_1.default.sign({
+        userName: userName
+    }, process.env.SECRET_KEY || 'randomPasswordGenerator345');
+    res.json(token);
 });
 exports.loginUser = loginUser;

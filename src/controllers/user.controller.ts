@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../models/user.models';
+import jwt from 'jsonwebtoken';
 
 export const newUser=async (req: Request, res:Response) =>{
 
@@ -11,13 +12,12 @@ export const newUser=async (req: Request, res:Response) =>{
     //validate if user exist on the database
     const user= await User.findOne({where: {dniUser: dniUser}});
 
+
     if(user){
         return res.status(400).json({
             msg: "The user already exist with that dni"
         })
     }
-
-    console.log("Continue");
 
     //Encrypt password
     const hashedPassword=await bcrypt.hash(passwordUser, 10);
@@ -36,6 +36,7 @@ export const newUser=async (req: Request, res:Response) =>{
         res.json({
             msg: `User ${nameUser} ${lastNameUser} created successfully!`
         });
+
     } catch (error) {
         res.status(400).json({
             msg:"An error has ocurred",
@@ -57,7 +58,10 @@ export const loginUser= async (req: Request, res:Response) =>{
         })
     }
 
+    console.log(passwordUser);
+    console.log(userExist.passwordUser);
     //validate password
+                                        //return true or false
     const passwordValidator= await bcrypt.compare(passwordUser, userExist.passwordUser);
     console.log(passwordValidator);
 
@@ -67,9 +71,11 @@ export const loginUser= async (req: Request, res:Response) =>{
         })
     }
 
-    
-    res.json({
-        msg: 'Login User',
-    });
+    //generate token 
+    const token=jwt.sign({
+        userName: userName
+    },process.env.SECRET_KEY || 'randomPasswordGenerator345')
+
+    res.json(token);
 }
 
