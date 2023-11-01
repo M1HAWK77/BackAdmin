@@ -16,6 +16,7 @@ exports.loginUser = exports.newUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_models_1 = require("../models/user.models");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const manage_error_1 = require("../error/manage.error");
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*Destructuring req.body(similar to type req.body.userName), in my json i gonna received
     the params that i need ex. dniUser- nameUser*/
@@ -23,8 +24,8 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //validate if user exist on the database
     const user = yield user_models_1.User.findOne({ where: { dniUser: dniUser } });
     if (user) {
-        return res.status(400).json({
-            msg: "The user already exist with that dni"
+        return res.status(409).json({
+            msg: manage_error_1.ErrorMessages.USER_EXIST
         });
     }
     //Encrypt password
@@ -44,8 +45,8 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        res.status(400).json({
-            msg: "An error has ocurred",
+        res.status(500).json({
+            msg: manage_error_1.ErrorMessages.SERVER_ERROR,
             error
         });
     }
@@ -68,7 +69,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(passwordValidator);
     if (!passwordValidator) {
         return res.status(400).json({
-            msg: "Wrong password"
+            msg: manage_error_1.ErrorMessages.WRONG_PASS
         });
     }
     //generate token 

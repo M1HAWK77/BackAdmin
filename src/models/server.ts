@@ -1,10 +1,13 @@
 //to create our API REST
 import express, {Application} from 'express';
+import cors from 'cors';
 //routes
 import routesProduct from '../routes/product.routes';
 import routesUser from '../routes/user.routes';
 import routesCategories from '../routes/category.routes';
 import routesSuppliers from '../routes/supplier.routes';
+import routesProductRegistration from '../routes/productRegistration.routes'
+import routesProductOutput from '../routes/productOutput.routes';
 //creation of tables
 import {User,Category,DetailOutput,DetailRegistration,Product,ProductOutput,ProductRegistration,Supplier} from './tblAssociation.models';
 
@@ -35,12 +38,15 @@ class Server{
         this.app.use('/api/users', routesUser);
         this.app.use('/api/categories', routesCategories);
         this.app.use('/api/suppliers', routesSuppliers);
+        this.app.use('/api/productRegistration', routesProductRegistration);
+        this.app.use('/api/productOutput', routesProductOutput);
     }
 
     /*@middlewares: check http request from server,
     if body is in json convert data to js object*/
     middlewares(){
         this.app.use(express.json());
+        this.app.use(cors());
     }
 
     /*@dbConnect: Asynchronous function that creates the database based on

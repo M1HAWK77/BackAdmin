@@ -2,6 +2,7 @@ import {Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../models/user.models';
 import jwt from 'jsonwebtoken';
+import { ErrorMessages } from '../error/manage.error';
 
 export const newUser=async (req: Request, res:Response) =>{
 
@@ -14,8 +15,8 @@ export const newUser=async (req: Request, res:Response) =>{
 
 
     if(user){
-        return res.status(400).json({
-            msg: "The user already exist with that dni"
+        return res.status(409).json({
+            msg: ErrorMessages.USER_EXIST
         })
     }
 
@@ -38,8 +39,8 @@ export const newUser=async (req: Request, res:Response) =>{
         });
 
     } catch (error) {
-        res.status(400).json({
-            msg:"An error has ocurred",
+        res.status(500).json({
+            msg: ErrorMessages.SERVER_ERROR,
             error
         })
     }
@@ -67,7 +68,7 @@ export const loginUser= async (req: Request, res:Response) =>{
 
     if(!passwordValidator){
         return res.status(400).json({
-            msg: "Wrong password"
+            msg: ErrorMessages.WRONG_PASS
         })
     }
 
