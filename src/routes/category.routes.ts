@@ -1,11 +1,13 @@
 import {Router} from 'express';
 import {deleteCategory, getCategories, getCategoryById, newCategory, updateCategory } from '../controllers/category.controller';
+import validateToken from './validateToken.routes';
 
 const router= Router();
-router.get('/', getCategories);
-router.post('/', newCategory);
-router.get('/:id', getCategoryById);
-router.put('/:id', updateCategory);
-router.delete('/:id', deleteCategory);
+
+router.get('/', validateToken, getCategories);
+router.post('/', validateToken, newCategory);
+router.get('/:id', validateToken, getCategoryById);
+router.put('/:id', validateToken, updateCategory);
+router.delete('/:id', validateToken, deleteCategory);
 
 export default router;

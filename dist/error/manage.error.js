@@ -13,4 +13,5 @@ var ErrorMessages;
     ErrorMessages["SERVER_ERROR"] = "An error has ocurred with the server";
     ErrorMessages["UNAUTHORIZED"] = "you don't have permiss to access to this apart";
     ErrorMessages["WRONG_PASS"] = "Wrong password";
+    ErrorMessages["WRONG_TOKEN"] = "Invalid Token";
 })(ErrorMessages || (exports.ErrorMessages = ErrorMessages = {}));

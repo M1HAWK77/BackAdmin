@@ -80,3 +80,83 @@ export const loginUser= async (req: Request, res:Response) =>{
     res.json(token);
 }
 
+
+export const getUsers = async (req: Request, res: Response) => {
+    try {
+        const usersList = await User.findAll();
+        res.json({
+            usersList
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: ErrorMessages.SERVER_ERROR
+        })
+    }
+}
+
+
+export const deleteUser= async(req:Request, res:Response)=>{
+    const idUser= req.params.id;
+    const existUser:any= await User.findOne({where:{dniUser: idUser}});
+
+    if(!existUser){
+        return res.status(404).json({
+            msg:ErrorMessages.USER_EXIST
+        })
+    }
+
+    try {
+        await User.destroy(
+            {where:{dniUser:idUser}}
+        );
+        
+        res.json({
+            msg:`The user ${existUser.nameUser} ${existUser.lastNameUser} was deleted succesfully`
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg:ErrorMessages.SERVER_ERROR,
+            error
+        })
+    }
+
+
+}
+
+export const updateUser = async (req: Request, res: Response) => {
+
+    const idUser = req.params.id;
+    const { nameUser, lastNameUser, userName} = req.body;
+
+    const existUser:any = await User.findOne({ where: { dniUser: idUser } });
+
+    if (!existUser) {
+        return res.status(404).json({
+            msg: ErrorMessages.SUP_NOT_FOUND
+        });
+    }
+
+    try {
+        await User.update(
+            {
+                nameUser: nameUser,
+                lastNameUser: lastNameUser,
+                userName: userName,
+            }, 
+            {where:{dniUser:idUser}}
+        );
+
+        res.json({
+                msg: `The User ${existUser.nameUser} was edited succefully`
+            });
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: ErrorMessages.SERVER_ERROR,
+            error
+        })
+    }
+}
+

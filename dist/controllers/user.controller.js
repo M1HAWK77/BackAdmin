@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.newUser = void 0;
+exports.updateUser = exports.deleteUser = exports.getUsers = exports.loginUser = exports.newUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_models_1 = require("../models/user.models");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -79,3 +79,66 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(token);
 });
 exports.loginUser = loginUser;
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const usersList = yield user_models_1.User.findAll();
+        res.json({
+            usersList
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            msg: manage_error_1.ErrorMessages.SERVER_ERROR
+        });
+    }
+});
+exports.getUsers = getUsers;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const idUser = req.params.id;
+    const existUser = yield user_models_1.User.findOne({ where: { dniUser: idUser } });
+    if (!existUser) {
+        return res.status(404).json({
+            msg: manage_error_1.ErrorMessages.USER_EXIST
+        });
+    }
+    try {
+        yield user_models_1.User.destroy({ where: { dniUser: idUser } });
+        res.json({
+            msg: `The user ${existUser.nameUser} ${existUser.lastNameUser} was deleted succesfully`
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            msg: manage_error_1.ErrorMessages.SERVER_ERROR,
+            error
+        });
+    }
+});
+exports.deleteUser = deleteUser;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const idUser = req.params.id;
+    const { nameUser, lastNameUser, userName } = req.body;
+    const existUser = yield user_models_1.User.findOne({ where: { dniUser: idUser } });
+    if (!existUser) {
+        return res.status(404).json({
+            msg: manage_error_1.ErrorMessages.SUP_NOT_FOUND
+        });
+    }
+    try {
+        yield user_models_1.User.update({
+            nameUser: nameUser,
+            lastNameUser: lastNameUser,
+            userName: userName,
+        }, { where: { dniUser: idUser } });
+        res.json({
+            msg: `The User ${existUser.nameUser} was edited succefully`
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            msg: manage_error_1.ErrorMessages.SERVER_ERROR,
+            error
+        });
+    }
+});
+exports.updateUser = updateUser;

@@ -8,5 +8,6 @@ export enum ErrorMessages{
     USER_EXIST= "The user already exist with that dni",
     SERVER_ERROR="An error has ocurred with the server",
     UNAUTHORIZED= "you don't have permiss to access to this apart",
-    WRONG_PASS= "Wrong password"
+    WRONG_PASS= "Wrong password",
+    WRONG_TOKEN= "Invalid Token"
 }
