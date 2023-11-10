@@ -13,6 +13,7 @@ exports.newProductRegistration = exports.getProductRegistrationById = exports.ge
 const productRegistration_models_1 = require("../models/productRegistration.models");
 const detailProductRegistration_models_1 = require("../models/detailProductRegistration.models");
 const manage_error_1 = require("../error/manage.error");
+const product_models_1 = require("../models/product.models");
 //@getProductRegistration: return all products from the database
 const getProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -51,24 +52,41 @@ const getProductRegistrationById = (req, res) => __awaiter(void 0, void 0, void 
 });
 exports.getProductRegistrationById = getProductRegistrationById;
 const newProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { idProduct, idCatBelong, productName, productPrice, stock, available } = req.body;
-    const productExist = yield productRegistration_models_1.ProductRegistration.findOne({ where: { idProduct: idProduct } });
-    if (productExist) {
-        return res.status(409).json({
-            msg: manage_error_1.ErrorMessages.PRO_EXIST
-        });
+    const { dniUserReceive, idSup, totalProduct, totalCost, products } = req.body;
+    // calculate totalProductEstimated y totalCostEstimated
+    let totalProductEstimated = 0;
+    let totalCostEstimated = 0;
+    for (let product of products) {
+        //find the value of the product
+        let productId = product.idProductBelong;
+        let findProduct = yield product_models_1.Product.findOne({ where: { idProduct: productId } });
+        totalProductEstimated += product.productQty;
+        totalCostEstimated += (findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * product.productQty;
+        //update the quantity of products in my table Products
+        findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('stock', findProduct.getDataValue('stock') + product.productQty);
+        yield (findProduct === null || findProduct === void 0 ? void 0 : findProduct.save());
     }
     try {
-        yield productRegistration_models_1.ProductRegistration.create({
-            idProduct: idProduct,
-            idCatBelong: idCatBelong,
-            productName: productName,
-            productPrice: productPrice,
-            stock: stock,
-            available: available
+        //This method return an instance of the created object,
+        //so im gonna catch it to show in the message
+        //admissionDate: Date.now().toLocaleString(),
+        let newRegister = yield productRegistration_models_1.ProductRegistration.create({
+            dniUserReceive: dniUserReceive,
+            idSup: idSup,
+            admissionDate: new Date().toLocaleString(),
+            totalProducts: totalProductEstimated,
+            totalCost: totalCostEstimated
         });
+        for (let product of products) {
+            product.idReg = newRegister.getDataValue('idReg');
+            yield detailProductRegistration_models_1.DetailRegistration.create({
+                idRegistrationBelong: product.idReg,
+                idProductBelong: product.idProductBelong,
+                productQty: product.productQty
+            });
+        }
         res.json({
-            msg: `The product ${productName} was created succesfully`,
+            msg: `The product ${newRegister.getDataValue('idReg')} was created succesfully with ${products.length} products`,
         });
     }
     catch (error) {
@@ -79,69 +97,3 @@ const newProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.newProductRegistration = newProductRegistration;
-/*Terminar este apartado
-
-
-export const updateProduct= async(req: Request, res: Response) =>{
-    const registrationId= req.params.id;
-    const {idPRegisterelong, productName, productPrice, stock, available} = req.body;
-
-    const productExist: any= await ProductRegistration.findOne({where: {idProduct:registrationId}});
-    if(!registrationId){
-        res.status(404).json({
-            msg: ErrorMessages.PRO_NOT_FOUND
-        })
-    }
-
-    try {
-        await ProductRegistration.update(
-            {
-                idProductBelong:idProductBelong,
-                productName: productName,
-                productPrice: productPrice,
-                stock: stock,
-                available: available
-            },
-            {where:{idProduct: registrationId}}Register  )
-
-        res.json({
-            msg: `The Product ${productExist.productName} was edited succefully`
-        })
-    } catch (error) {
-        return res.status(500).json({
-            msg: ErrorMessages.SERVER_ERROR,
-            error
-        })
-    }
-}
-
-export const deleteProduct = async (req: Request, res: Response) => {
-
-    const idProduct = req.params.id;
-    const existProduct:any = await ProductRegistration.findOne({ where: { idProduct: idProduct } });
-
-
-    if (!existProduct) {
-        return res.status(404).json({
-            msg: ErrorMessages.PRO_NOT_FOUND
-        });
-    }
-
-    try {
-
-        await ProductRegistration.destroy(
-            {where:{idProduct:idProduct}}
-        );
-
-        res.json({
-                msg: `The Product ${existProductRegistration.productName} was deleted succefully`
-            });
-
-
-    } catch (error) {
-        return res.status(500).json({
-            msg: ErrorMessages.SERVER_ERROR,
-            error
-        })
-    }
-}*/ 

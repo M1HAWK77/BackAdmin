@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ProductRegistration } from '../models/productRegistration.models';
 import { DetailRegistration } from '../models/detailProductRegistration.models';
 import { ErrorMessages } from '../error/manage.error';
+import { Product } from '../models/product.models';
 
 //@getProductRegistration: return all products from the database
 export const getProductRegistration = async (req: Request, res: Response) => {
@@ -24,12 +25,11 @@ export const getProductRegistration = async (req: Request, res: Response) => {
 
 }
 
-
-export const getProductRegistrationById = async(req: Request, res:Response) =>{
+export const getProductRegistrationById = async (req: Request, res: Response) => {
     try {
-        const registrationId= req.params.id;
-        const findRegister= await ProductRegistration.findOne({where: {idReg: registrationId}})  
-        if(!findRegister){
+        const registrationId = req.params.id;
+        const findRegister = await ProductRegistration.findOne({ where: { idReg: registrationId } })
+        if (!findRegister) {
             return res.status(404).json({
                 msg: ErrorMessages.PRO_NOT_FOUND
             })
@@ -41,101 +41,56 @@ export const getProductRegistrationById = async(req: Request, res:Response) =>{
         res.status(500).json({
             msg: ErrorMessages.SERVER_ERROR,
             error
-        })        
+        })
     }
 
 }
 
-export const newProductRegistration = async(req: Request, res: Response) => {
-    const { idProduct, idCatBelong, productName, productPrice, stock, available } = req.body;
-    const productExist= await ProductRegistration.findOne({where: {idProduct:idProduct}})
+export const newProductRegistration = async (req: Request, res: Response) => {
+    const { dniUserReceive, idSup, totalProduct, totalCost, products } = req.body;
+    
+    // calculate totalProductEstimated y totalCostEstimated
+    let totalProductEstimated = 0;
+    let totalCostEstimated = 0;
 
-    if(productExist){
-        return res.status(409).json({
-            msg: ErrorMessages.PRO_EXIST
-        })
+    for (let product of products) {
+        //find the value of the product
+        let productId=product.idProductBelong;
+        let findProduct= await Product.findOne({where:{idProduct:productId}})
+
+        totalProductEstimated += product.productQty;
+        totalCostEstimated += findProduct?.getDataValue('productPrice') * product.productQty;
+        //update the quantity of products in my table Products
+        findProduct?.setDataValue('stock', findProduct.getDataValue('stock')+ product.productQty)
+        await findProduct?.save()
     }
+
 
     try {
-
-        await ProductRegistration.create({
-            idProduct: idProduct,
-            idCatBelong: idCatBelong,
-            productName: productName,
-            productPrice: productPrice,
-            stock: stock,
-            available: available
+        //This method return an instance of the created object,
+        //so im gonna catch it to show in the message
+        //admissionDate: Date.now().toLocaleString(),
+        let newRegister = await ProductRegistration.create({
+            dniUserReceive: dniUserReceive,
+            idSup: idSup,
+            admissionDate: new Date().toLocaleString(),
+            totalProducts: totalProductEstimated,
+            totalCost: totalCostEstimated
         })
-        
-            res.json({
-                msg: `The product ${productName} was created succesfully`,
-            });
-        
-    } catch (error) {
-        return res.status(500).json({
-            msg: ErrorMessages.SERVER_ERROR,
-            error    
-        })
-    }
-}
 
-/*Terminar este apartado
+        for (let product of products) {
+            product.idReg = newRegister.getDataValue('idReg');
+            await DetailRegistration.create({
+                idRegistrationBelong: product.idReg,
+                idProductBelong: product.idProductBelong,
+                productQty: product.productQty
+            })
 
-
-export const updateProduct= async(req: Request, res: Response) =>{
-    const registrationId= req.params.id;
-    const {idPRegisterelong, productName, productPrice, stock, available} = req.body;
-
-    const productExist: any= await ProductRegistration.findOne({where: {idProduct:registrationId}});
-    if(!registrationId){
-        res.status(404).json({
-            msg: ErrorMessages.PRO_NOT_FOUND
-        })
-    }
-
-    try {
-        await ProductRegistration.update(
-            {
-                idProductBelong:idProductBelong,
-                productName: productName,
-                productPrice: productPrice,
-                stock: stock,
-                available: available
-            },
-            {where:{idProduct: registrationId}}Register  )
+        }
 
         res.json({
-            msg: `The Product ${productExist.productName} was edited succefully`
-        })
-    } catch (error) {
-        return res.status(500).json({
-            msg: ErrorMessages.SERVER_ERROR,
-            error
-        })
-    }
-}
-
-export const deleteProduct = async (req: Request, res: Response) => {
-
-    const idProduct = req.params.id;
-    const existProduct:any = await ProductRegistration.findOne({ where: { idProduct: idProduct } });
-
-
-    if (!existProduct) {
-        return res.status(404).json({
-            msg: ErrorMessages.PRO_NOT_FOUND
+            msg: `The product ${newRegister.getDataValue('idReg')} was created succesfully with ${products.length} products`,
         });
-    }
-
-    try {
-
-        await ProductRegistration.destroy(
-            {where:{idProduct:idProduct}}
-        );
-
-        res.json({
-                msg: `The Product ${existProductRegistration.productName} was deleted succefully`
-            });
 
 
     } catch (error) {
@@ -144,4 +99,4 @@ export const deleteProduct = async (req: Request, res: Response) => {
             error
         })
     }
-}*/
+}
