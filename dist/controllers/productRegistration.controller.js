@@ -18,10 +18,10 @@ const product_models_1 = require("../models/product.models");
 const getProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const headerListRegistration = yield productRegistration_models_1.ProductRegistration.findAll();
-        const DetailListRegistration = yield detailProductRegistration_models_1.DetailRegistration.findAll();
+        const detailListRegistration = yield detailProductRegistration_models_1.DetailRegistration.findAll({ order: ['idRegistrationBelong'] });
         res.json({
             headerListRegistration,
-            DetailListRegistration
+            detailListRegistration
         });
     }
     catch (error) {
@@ -60,10 +60,14 @@ const newProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, f
         //find the value of the product
         let productId = product.idProductBelong;
         let findProduct = yield product_models_1.Product.findOne({ where: { idProduct: productId } });
-        totalProductEstimated += product.productQty;
-        totalCostEstimated += (findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * product.productQty;
+        totalProductEstimated += Number(product.productQty);
+        totalCostEstimated += Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * Number(product.productQty);
+        //Impresiones ver que pasa
+        console.log(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock'));
+        console.log(product.productQty);
+        console.log(Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock')) + Number(product.productQty));
         //update the quantity of products in my table Products
-        findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('stock', findProduct.getDataValue('stock') + product.productQty);
+        findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('stock', Number(findProduct.getDataValue('stock')) + Number(product.productQty));
         yield (findProduct === null || findProduct === void 0 ? void 0 : findProduct.save());
     }
     try {
@@ -86,7 +90,7 @@ const newProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, f
             });
         }
         res.json({
-            msg: `The product ${newRegister.getDataValue('idReg')} was created succesfully with ${products.length} products`,
+            msg: `El registro ${newRegister.getDataValue('idReg')} se creo satisfactoriamente con ${products.length} productos`,
         });
     }
     catch (error) {

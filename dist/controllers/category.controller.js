@@ -60,7 +60,7 @@ const newCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             descriptionCat: descriptionCat,
         });
         res.json({
-            msg: `The Category ${nameCat} was created succefully`
+            msg: `La Categoria ${nameCat} ha sido creada satisfactoriamente`
         });
     }
     catch (error) {
@@ -86,7 +86,7 @@ const updateCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
             descriptionCat: descriptionCat,
         }, { where: { idCat: idCat } });
         res.json({
-            msg: `The Category ${existCategory.nameCat} was edited succefully`
+            msg: `La Categoria ${existCategory.nameCat} ha sido editada satisfactoriamente`
         });
     }
     catch (error) {
@@ -108,7 +108,7 @@ const deleteCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         yield category_models_1.Category.destroy({ where: { idCat: idCat } });
         res.json({
-            msg: `The Category ${existCategory.nameCat} was deleted succefully`
+            msg: `La Categoria ${existCategory.nameCat} ha sido eliminada satisfactoriamente`
         });
     }
     catch (error) {

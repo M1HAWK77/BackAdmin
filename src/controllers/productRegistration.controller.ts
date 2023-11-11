@@ -6,14 +6,13 @@ import { Product } from '../models/product.models';
 
 //@getProductRegistration: return all products from the database
 export const getProductRegistration = async (req: Request, res: Response) => {
-
     try {
         const headerListRegistration = await ProductRegistration.findAll();
-        const DetailListRegistration = await DetailRegistration.findAll();
+        const detailListRegistration = await DetailRegistration.findAll({order:['idRegistrationBelong']});
 
         res.json({
             headerListRegistration,
-            DetailListRegistration
+            detailListRegistration
         });
 
     } catch (error) {
@@ -22,7 +21,6 @@ export const getProductRegistration = async (req: Request, res: Response) => {
             error
         })
     }
-
 }
 
 export const getProductRegistrationById = async (req: Request, res: Response) => {
@@ -58,10 +56,15 @@ export const newProductRegistration = async (req: Request, res: Response) => {
         let productId=product.idProductBelong;
         let findProduct= await Product.findOne({where:{idProduct:productId}})
 
-        totalProductEstimated += product.productQty;
-        totalCostEstimated += findProduct?.getDataValue('productPrice') * product.productQty;
+        totalProductEstimated += Number(product.productQty);
+        totalCostEstimated += Number(findProduct?.getDataValue('productPrice')) * Number(product.productQty);
+        //Impresiones ver que pasa
+        console.log(findProduct?.getDataValue('stock'));
+        console.log(product.productQty)
+        console.log(Number(findProduct?.getDataValue('stock')) + Number(product.productQty))
+
         //update the quantity of products in my table Products
-        findProduct?.setDataValue('stock', findProduct.getDataValue('stock')+ product.productQty)
+        findProduct?.setDataValue('stock', Number(findProduct.getDataValue('stock')) + Number(product.productQty))
         await findProduct?.save()
     }
 
@@ -89,7 +92,7 @@ export const newProductRegistration = async (req: Request, res: Response) => {
         }
 
         res.json({
-            msg: `The product ${newRegister.getDataValue('idReg')} was created succesfully with ${products.length} products`,
+            msg: `El registro ${newRegister.getDataValue('idReg')} se creo satisfactoriamente con ${products.length} productos`,
         });
 
 

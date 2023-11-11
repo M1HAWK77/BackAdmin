@@ -41,7 +41,7 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             userRole: userRole
         });
         res.json({
-            msg: `User ${nameUser} ${lastNameUser} created successfully!`
+            msg: `Usuario ${nameUser} ${lastNameUser} ha sido creado satisfactoriamente!`
         });
     }
     catch (error) {
@@ -58,15 +58,12 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userExist = yield user_models_1.User.findOne({ where: { userName: userName } });
     if (!userExist) {
         return res.status(400).json({
-            msg: `We can't find a user with that name ${userName}`
+            msg: `No se encontro un usuario con el nombre: ${userName}`
         });
     }
-    console.log(passwordUser);
-    console.log(userExist.passwordUser);
     //validate password
     //return true or false
     const passwordValidator = yield bcrypt_1.default.compare(passwordUser, userExist.passwordUser);
-    console.log(passwordValidator);
     if (!passwordValidator) {
         return res.status(400).json({
             msg: manage_error_1.ErrorMessages.WRONG_PASS
@@ -104,7 +101,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         yield user_models_1.User.destroy({ where: { dniUser: idUser } });
         res.json({
-            msg: `The user ${existUser.nameUser} ${existUser.lastNameUser} was deleted succesfully`
+            msg: `El usuario ${existUser.nameUser} ${existUser.lastNameUser} ha sido removido satisfactoriamente`
         });
     }
     catch (error) {
@@ -131,7 +128,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             userName: userName,
         }, { where: { dniUser: idUser } });
         res.json({
-            msg: `The User ${existUser.nameUser} was edited succefully`
+            msg: `El usuario ${existUser.nameUser} ha sido editado satisfactoriamente`
         });
     }
     catch (error) {

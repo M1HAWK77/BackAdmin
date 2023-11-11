@@ -35,7 +35,7 @@ export const newUser=async (req: Request, res:Response) =>{
         });
     
         res.json({
-            msg: `User ${nameUser} ${lastNameUser} created successfully!`
+            msg: `Usuario ${nameUser} ${lastNameUser} ha sido creado satisfactoriamente!`
         });
 
     } catch (error) {
@@ -55,16 +55,13 @@ export const loginUser= async (req: Request, res:Response) =>{
 
     if(!userExist){
         return res.status(400).json({
-            msg: `We can't find a user with that name ${userName}`
+            msg: `No se encontro un usuario con el nombre: ${userName}`
         })
     }
 
-    console.log(passwordUser);
-    console.log(userExist.passwordUser);
     //validate password
-                                        //return true or false
+                                            //return true or false
     const passwordValidator= await bcrypt.compare(passwordUser, userExist.passwordUser);
-    console.log(passwordValidator);
 
     if(!passwordValidator){
         return res.status(400).json({
@@ -112,7 +109,7 @@ export const deleteUser= async(req:Request, res:Response)=>{
         );
         
         res.json({
-            msg:`The user ${existUser.nameUser} ${existUser.lastNameUser} was deleted succesfully`
+            msg:`El usuario ${existUser.nameUser} ${existUser.lastNameUser} ha sido removido satisfactoriamente`
         })
 
     } catch (error) {
@@ -149,7 +146,7 @@ export const updateUser = async (req: Request, res: Response) => {
         );
 
         res.json({
-                msg: `The User ${existUser.nameUser} was edited succefully`
+                msg: `El usuario ${existUser.nameUser} ha sido editado satisfactoriamente`
             });
 
     } catch (error) {

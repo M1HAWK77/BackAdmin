@@ -53,7 +53,7 @@ export const newCategory = async (req: Request, res: Response) => {
         });
 
         res.json({
-            msg: `The Category ${nameCat} was created succefully`
+            msg: `La Categoria ${nameCat} ha sido creada satisfactoriamente`
         });
 
     } catch (error) {
@@ -88,7 +88,7 @@ export const updateCategory = async (req: Request, res: Response) => {
         );
 
         res.json({
-                msg: `The Category ${existCategory.nameCat} was edited succefully`
+                msg: `La Categoria ${existCategory.nameCat} ha sido editada satisfactoriamente`
             });
 
     } catch (error) {
@@ -119,7 +119,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
         );
 
         res.json({
-                msg: `The Category ${existCategory.nameCat} was deleted succefully`
+                msg: `La Categoria ${existCategory.nameCat} ha sido eliminada satisfactoriamente`
             });
 
     } catch (error) {

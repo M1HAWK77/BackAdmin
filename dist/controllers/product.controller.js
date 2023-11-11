@@ -65,7 +65,7 @@ const newProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             available: available
         });
         res.json({
-            msg: `The product ${productName} was created succesfully`,
+            msg: `El producto ${productName} ha sido creado satisfactoriamente`,
         });
     }
     catch (error) {
@@ -91,10 +91,10 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             productName: productName,
             productPrice: productPrice,
             stock: stock,
-            available: available
+            available: stock === 0 ? false : available
         }, { where: { idProduct: productId } });
         res.json({
-            msg: `The Product ${productExist.productName} was edited succefully`
+            msg: `El producto ${productExist.productName} ha sido editado satisfactoriamente`
         });
     }
     catch (error) {
@@ -116,7 +116,7 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         yield product_models_1.Product.destroy({ where: { idProduct: idProduct } });
         res.json({
-            msg: `The Product ${existProduct.productName} was deleted succefully`
+            msg: `El Producto ${existProduct.productName} ha sido eliminado satisfactoriamente`
         });
     }
     catch (error) {

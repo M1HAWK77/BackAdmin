@@ -16,9 +16,11 @@ const product_models_1 = require("../models/product.models");
 const detailProductOutput_models_1 = require("../models/detailProductOutput.models");
 const getProductsOutput = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const productsList = yield productOutput_models_1.ProductOutput.findAll();
+        const headerListOutput = yield productOutput_models_1.ProductOutput.findAll();
+        const detailListOutput = yield detailProductOutput_models_1.DetailOutput.findAll({ order: ['idOutputBelong'] });
         res.json({
-            productsList
+            headerListOutput,
+            detailListOutput
         });
     }
     catch (error) {
@@ -38,10 +40,20 @@ const newProductOutput = (req, res) => __awaiter(void 0, void 0, void 0, functio
         //find the value of the product
         let productId = product.idProductBelong;
         let findProduct = yield product_models_1.Product.findOne({ where: { idProduct: productId } });
-        totalProductEstimated += product.productQty;
-        totalCostEstimated += (findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * product.productQty;
+        //control amount not greater than qty sent
+        if ((findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock')) < product.productQty) {
+            return res.status(500).json({
+                msg: `${manage_error_1.ErrorMessages.MAX_AMOUNT}, 'existencias disponibles del producto ${findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productName')}: ${findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock')}'`
+            });
+        }
+        totalProductEstimated += Number(product.productQty);
+        totalCostEstimated += (Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * Number(product.productQty)) + ((Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * Number(product.productQty)) * 0.09);
         //update the quantity of products in my table Products
-        findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('stock', findProduct.getDataValue('stock') - product.productQty);
+        findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('stock', Number(findProduct.getDataValue('stock')) - Number(product.productQty));
+        //update available if the substraction is equal to 0
+        if ((findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock')) === 0) {
+            findProduct === null || findProduct === void 0 ? void 0 : findProduct.setDataValue('available', false);
+        }
         yield (findProduct === null || findProduct === void 0 ? void 0 : findProduct.save());
     }
     try {
@@ -63,7 +75,7 @@ const newProductOutput = (req, res) => __awaiter(void 0, void 0, void 0, functio
             });
         }
         res.json({
-            msg: `The product ${newOutput.getDataValue('idReg')} was succesfully removed with ${products.length} products`,
+            msg: `La salida ${newOutput.getDataValue('idOutput')} ha sido creada con exito ${products.length} productos`,
         });
     }
     catch (error) {

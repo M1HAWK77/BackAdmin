@@ -7,9 +7,11 @@ import { DetailOutput } from '../models/detailProductOutput.models';
 
 export const getProductsOutput = async (req: Request, res: Response) => {
     try {
-        const productsList = await ProductOutput.findAll();
+        const headerListOutput = await ProductOutput.findAll();
+        const detailListOutput = await DetailOutput.findAll({ order: ['idOutputBelong'] });
         res.json({
-            productsList
+            headerListOutput,
+            detailListOutput
         });
 
     } catch (error) {
@@ -22,23 +24,34 @@ export const getProductsOutput = async (req: Request, res: Response) => {
 
 export const newProductOutput = async (req: Request, res: Response) => {
     const { dniUserOutput, products } = req.body;
-    
+
     // calculate totalProductEstimated y totalCostEstimated
     let totalProductEstimated = 0;
     let totalCostEstimated = 0;
 
+
+
     for (let product of products) {
         //find the value of the product
-        let productId=product.idProductBelong;
-        let findProduct= await Product.findOne({where:{idProduct:productId}})
+        let productId = product.idProductBelong;
+        let findProduct = await Product.findOne({ where: { idProduct: productId } })
 
-        totalProductEstimated += product.productQty;
-        totalCostEstimated += findProduct?.getDataValue('productPrice') * product.productQty;
+        //control amount not greater than qty sent
+        if (findProduct?.getDataValue('stock') < product.productQty) {
+            return res.status(500).json({
+                msg: `${ErrorMessages.MAX_AMOUNT}, 'existencias disponibles del producto ${findProduct?.getDataValue('productName')}: ${findProduct?.getDataValue('stock')}'`
+            })
+        }
+        totalProductEstimated += Number(product.productQty);
+        totalCostEstimated += (Number(findProduct?.getDataValue('productPrice')) * Number(product.productQty)) + ((Number(findProduct?.getDataValue('productPrice')) * Number(product.productQty)) * 0.09);
         //update the quantity of products in my table Products
-        findProduct?.setDataValue('stock', findProduct.getDataValue('stock') - product.productQty)
+        findProduct?.setDataValue('stock', Number(findProduct.getDataValue('stock')) - Number(product.productQty))
+        //update available if the substraction is equal to 0
+        if (findProduct?.getDataValue('stock') === 0) {
+            findProduct?.setDataValue('available', false);
+        }
         await findProduct?.save()
     }
-
 
     try {
         //This method return an instance of the created object,
@@ -62,7 +75,7 @@ export const newProductOutput = async (req: Request, res: Response) => {
         }
 
         res.json({
-            msg: `The product ${newOutput.getDataValue('idReg')} was succesfully removed with ${products.length} products`,
+            msg: `La salida ${newOutput.getDataValue('idOutput')} ha sido creada con exito ${products.length} productos`,
         });
 
 

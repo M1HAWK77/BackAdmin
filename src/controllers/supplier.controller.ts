@@ -57,7 +57,7 @@ export const newSupplier = async (req: Request, res: Response) => {
         });
 
         res.json({
-            msg: `The supplier ${nameSup} was created succefully`
+            msg: `El proveedor ${nameSup} se creo satisfactoriamente`
         });
 
     } catch (error) {
@@ -98,7 +98,7 @@ export const updateSupplier = async (req: Request, res: Response) => {
         );
 
         res.json({
-                msg: `The supplier ${existSupplier.nameSup} was edited succefully`
+                msg: `El proveedor ${existSupplier.nameSup} ha sido editado satisfactoriamente`
             });
 
     } catch (error) {
@@ -128,7 +128,7 @@ export const deleteSupplier = async (req: Request, res: Response) => {
         );
 
         res.json({
-                msg: `The supplier ${existSupplier.nameSup} was deleted succefully`
+                msg: `El proveedor ${existSupplier.nameSup} ha sido removido satisfactoriamente`
             });
 
     } catch (error) {

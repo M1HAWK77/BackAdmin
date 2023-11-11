@@ -63,7 +63,7 @@ const newSupplier = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             emailSup: emailSup
         });
         res.json({
-            msg: `The supplier ${nameSup} was created succefully`
+            msg: `El proveedor ${nameSup} se creo satisfactoriamente`
         });
     }
     catch (error) {
@@ -96,7 +96,7 @@ const updateSupplier = (req, res) => __awaiter(void 0, void 0, void 0, function*
             emailSup: emailSup
         }, { where: { idSup: idSup } });
         res.json({
-            msg: `The supplier ${existSupplier.nameSup} was edited succefully`
+            msg: `El proveedor ${existSupplier.nameSup} ha sido editado satisfactoriamente`
         });
     }
     catch (error) {
@@ -118,7 +118,7 @@ const deleteSupplier = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         yield supplier_models_1.Supplier.destroy({ where: { idSup: idSup } });
         res.json({
-            msg: `The supplier ${existSupplier.nameSup} was deleted succefully`
+            msg: `El proveedor ${existSupplier.nameSup} ha sido removido satisfactoriamente`
         });
     }
     catch (error) {

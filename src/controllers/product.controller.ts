@@ -22,12 +22,12 @@ export const getProducts = async (req: Request, res: Response) => {
 }
 
 
-export const getProductById= async(req: Request, res:Response) =>{
+export const getProductById = async (req: Request, res: Response) => {
     try {
-        const productId= req.params.id;
-        const findProduct= await Product.findOne({where: {idProduct: productId}})
-        
-        if(!findProduct){
+        const productId = req.params.id;
+        const findProduct = await Product.findOne({ where: { idProduct: productId } })
+
+        if (!findProduct) {
             return res.status(404).json({
                 msg: ErrorMessages.PRO_NOT_FOUND
             })
@@ -39,16 +39,16 @@ export const getProductById= async(req: Request, res:Response) =>{
         res.status(500).json({
             msg: ErrorMessages.SERVER_ERROR,
             error
-        })        
+        })
     }
 
 }
 
-export const newProduct = async(req: Request, res: Response) => {
+export const newProduct = async (req: Request, res: Response) => {
     const { idProduct, idCatBelong, productName, productPrice, stock, available } = req.body;
-    const productExist= await Product.findOne({where: {idProduct:idProduct}})
+    const productExist = await Product.findOne({ where: { idProduct: idProduct } })
 
-    if(productExist){
+    if (productExist) {
         return res.status(409).json({
             msg: ErrorMessages.PRO_EXIST
         })
@@ -64,44 +64,44 @@ export const newProduct = async(req: Request, res: Response) => {
             stock: stock,
             available: available
         })
-        
-            res.json({
-                msg: `The product ${productName} was created succesfully`,
-            });
-        
+
+        res.json({
+            msg: `El producto ${productName} ha sido creado satisfactoriamente`,
+        });
+
     } catch (error) {
         return res.status(500).json({
             msg: ErrorMessages.SERVER_ERROR,
-            error    
+            error
         })
     }
 }
 
-export const updateProduct= async(req: Request, res: Response) =>{
-    const productId= req.params.id;
-    const {idProductBelong, productName, productPrice, stock, available} = req.body;
+export const updateProduct = async (req: Request, res: Response) => {
+    const productId = req.params.id;
+    const { idProductBelong, productName, productPrice, stock, available } = req.body;
 
-    const productExist: any= await Product.findOne({where: {idProduct:productId}});
-    if(!productExist){
+    const productExist: any = await Product.findOne({ where: { idProduct: productId } });
+    if (!productExist) {
         res.status(404).json({
             msg: ErrorMessages.PRO_NOT_FOUND
         })
     }
 
     try {
-        await Product.update(
-            {
-                idProductBelong:idProductBelong,
-                productName: productName,
-                productPrice: productPrice,
-                stock: stock,
-                available: available
-            },
-            {where:{idProduct: productId}}
-        )
+            await Product.update(
+                {
+                    idProductBelong: idProductBelong,
+                    productName: productName,
+                    productPrice: productPrice,
+                    stock: stock,
+                    available: stock === 0 ? false : available
+                },
+                { where: { idProduct: productId } }
+            )
 
         res.json({
-            msg: `The Product ${productExist.productName} was edited succefully`
+            msg: `El producto ${productExist.productName} ha sido editado satisfactoriamente`
         })
     } catch (error) {
         return res.status(500).json({
@@ -114,7 +114,7 @@ export const updateProduct= async(req: Request, res: Response) =>{
 export const deleteProduct = async (req: Request, res: Response) => {
 
     const idProduct = req.params.id;
-    const existProduct:any = await Product.findOne({ where: { idProduct: idProduct } });
+    const existProduct: any = await Product.findOne({ where: { idProduct: idProduct } });
 
 
     if (!existProduct) {
@@ -126,12 +126,12 @@ export const deleteProduct = async (req: Request, res: Response) => {
     try {
 
         await Product.destroy(
-            {where:{idProduct:idProduct}}
+            { where: { idProduct: idProduct } }
         );
 
         res.json({
-                msg: `The Product ${existProduct.productName} was deleted succefully`
-            });
+            msg: `El Producto ${existProduct.productName} ha sido eliminado satisfactoriamente`
+        });
 
 
     } catch (error) {

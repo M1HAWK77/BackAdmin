@@ -1,13 +1,14 @@
 export enum ErrorMessages{
-    SUP_NOT_FOUND= "The supplier doesn't exist in the database",
-    SUP_EXIST = "The supplier already exist on the database",
-    CAT_NOT_FOUND= "The category doesn't exist in the database",
-    CAT_EXIST = "The category already exist on the database",
-    PRO_NOT_FOUND= "The product doesn't exist in the database",
-    PRO_EXIST= "The product already exist on the database",
-    USER_EXIST= "The user already exist with that dni",
-    SERVER_ERROR="An error has ocurred with the server",
-    UNAUTHORIZED= "you don't have permiss to access to this apart",
-    WRONG_PASS= "Wrong password",
-    WRONG_TOKEN= "Invalid Token"
+    SUP_NOT_FOUND= "El proveedor no existe en la base de datos",
+    SUP_EXIST = "El proveedor actualmente existe en la base de datos",
+    CAT_NOT_FOUND= "La categoria no existe en la base de datos",
+    CAT_EXIST = "La category actualmente existe en la base de datos",
+    PRO_NOT_FOUND= "El producto no existe en la base de datos",
+    PRO_EXIST= "El producto actualmente existe en la base de datos",
+    USER_EXIST= "Ya existe un usuario con esa identificación",
+    SERVER_ERROR="Upps, ha ocurrido un error con el servidor",
+    UNAUTHORIZED= "No tienes los permisos suficientes para ingresar a este apartado",
+    WRONG_PASS= "Contraseña incorrecta",
+    WRONG_TOKEN= "Token Invalido",
+    MAX_AMOUNT= "No se puede retirar mas productos que la cantidad existente"
 }
