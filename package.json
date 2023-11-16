@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/Api-login src/tests/login.tests.ts",
+    "test": "mocha --require ts-node/register src/tests/login.tests.ts",
     "dev": "nodemon dist/index.js",
     "typescript": "tsc --watch"
   },
@@ -33,6 +33,7 @@
     "mocha": "^10.2.0",
     "node-mocks-http": "^1.13.0",
     "nodemon": "^3.0.1",
-    "sinon": "^17.0.1"
+    "sinon": "^17.0.1",
+    "ts-node": "^10.9.1"
   }
 }

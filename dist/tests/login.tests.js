@@ -37,45 +37,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // Importa la biblioteca Chai y los estilos de aserción que deseas utilizar
 const chai_1 = require("chai");
-const chai_http_1 = __importDefault(require("chai-http"));
 // Importa la función que deseas probar
 const user_controller_1 = require("../controllers/user.controller");
-//sinon.stub se usa para reemplazar las funciones User.findOne, bcrypt.compare y jwt.sign con versiones simuladas que devuelven valores predefinidos.
-const sinon_1 = __importDefault(require("sinon"));
 //para hacer las pruebas del login 
-const bcrypt = __importStar(require("bcrypt"));
 const jwt = __importStar(require("jsonwebtoken"));
+const bcrypt = __importStar(require("bcrypt"));
 const user_models_1 = require("../models/user.models");
 const node_mocks_http_1 = __importDefault(require("node-mocks-http"));
 //Indicamos que usamos http
-chai.use(chai_http_1.default);
 //Describo el grupo de pruebas
 describe('Api-login', () => {
-    it('Debe devolver true cuando se hayan identificado las credenciales'), () => __awaiter(void 0, void 0, void 0, function* () {
+    it('Debe devolver true cuando se hayan identificado las credenciales, y se verifique el token', () => __awaiter(void 0, void 0, void 0, function* () {
+        let userInput = 'ariel';
+        let passwordInput = '123';
         //Datos en formato json
         const req = node_mocks_http_1.default.createRequest({
             method: 'POST',
-            url: '/userLogin',
+            url: 'http://localhost:3001/api/users/userLogin',
             body: {
-                userName: 'ariel',
-                passwordUser: '123'
+                userName: userInput,
+                passwordUser: passwordInput
             }
         });
         //Simulo Respuesta del servidor
         const res = node_mocks_http_1.default.createResponse();
-        sinon_1.default.stub(user_models_1.User, 'findOne').resolves({ passwordUser: 'hashedPassword' });
-        sinon_1.default.stub(bcrypt, 'compare').resolves(true);
-        sinon_1.default.stub(jwt, 'sign').returns('token');
+        const userExist = yield user_models_1.User.findOne({ where: { userName: userInput } });
+        bcrypt.compare(passwordInput, userExist.passwordUser);
+        const token = jwt.sign({
+            userName: userInput
+        }, process.env.SECRET_KEY || 'randomPasswordGenerator345');
         yield (0, user_controller_1.loginUser)(req, res);
-        // Después de llamar a la función, puedes hacer aserciones sobre el objeto res
-        // Por ejemplo, puedes verificar el código de estado HTTP y el cuerpo de la respuesta
         (0, chai_1.expect)(res.statusCode).to.equal(200);
-        (0, chai_1.expect)(res.json.call('token')).to.equal('token').to.be.true;
-        // expect(res.json.calledWith('token')).to.be.true;
-    });
+        (0, chai_1.expect)(token).to.exist;
+    }));
     // Define otra prueba  
-    /*it('should return false when login is unsuccessful', () => {
-        const result = login('wrong_username', 'wrong_password');
-        expect(result).to.be.false;
-    });*/
+    it('Retorna false ya que la contraseña no coincide', () => __awaiter(void 0, void 0, void 0, function* () {
+        let userInput = 'ariel';
+        let passwordInput = '1234';
+        const userExist = yield user_models_1.User.findOne({ where: { userName: userInput } });
+        const comparePassword = yield bcrypt.compare(passwordInput, userExist.passwordUser);
+        (0, chai_1.expect)(comparePassword).to.be.false;
+    }));
+    // Define otra prueba  
+    it('Retorna false ya que el usuario no existe', () => __awaiter(void 0, void 0, void 0, function* () {
+        let userInput = 'kxm1';
+        const userExist = yield user_models_1.User.findOne({ where: { userName: userInput } });
+        (0, chai_1.expect)(userExist).to.be.null;
+    }));
 });
