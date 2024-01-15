@@ -62,7 +62,7 @@ const newProductRegistration = (req, res) => __awaiter(void 0, void 0, void 0, f
         let findProduct = yield product_models_1.Product.findOne({ where: { idProduct: productId } });
         totalProductEstimated += Number(product.productQty);
         totalCostEstimated += Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('productPrice')) * Number(product.productQty);
-        //Impresiones ver que pasa
+        //print to see what ha....
         console.log(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock'));
         console.log(product.productQty);
         console.log(Number(findProduct === null || findProduct === void 0 ? void 0 : findProduct.getDataValue('stock')) + Number(product.productQty));

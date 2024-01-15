@@ -71,7 +71,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     //generate token 
     const token = jsonwebtoken_1.default.sign({
-        userName: userName
+        userName: userName,
+        userRole: userExist.userRole
     }, process.env.SECRET_KEY || 'randomPasswordGenerator345');
     res.json(token);
 });

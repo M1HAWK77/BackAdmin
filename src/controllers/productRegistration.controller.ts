@@ -58,16 +58,14 @@ export const newProductRegistration = async (req: Request, res: Response) => {
 
         totalProductEstimated += Number(product.productQty);
         totalCostEstimated += Number(findProduct?.getDataValue('productPrice')) * Number(product.productQty);
-        //Impresiones ver que pasa
+        //print to see what ha....
         console.log(findProduct?.getDataValue('stock'));
         console.log(product.productQty)
         console.log(Number(findProduct?.getDataValue('stock')) + Number(product.productQty))
-
         //update the quantity of products in my table Products
         findProduct?.setDataValue('stock', Number(findProduct.getDataValue('stock')) + Number(product.productQty))
-        await findProduct?.save()
+        await findProduct?.save();
     }
-
 
     try {
         //This method return an instance of the created object,
@@ -94,7 +92,6 @@ export const newProductRegistration = async (req: Request, res: Response) => {
         res.json({
             msg: `El registro ${newRegister.getDataValue('idReg')} se creo satisfactoriamente con ${products.length} productos`,
         });
-
 
     } catch (error) {
         return res.status(500).json({

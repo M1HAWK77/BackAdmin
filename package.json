@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register src/tests/login.tests.ts",
+    "test": "mocha --require ts-node/register src/tests/*.ts",
     "dev": "nodemon dist/index.js",
     "typescript": "tsc --watch"
   },
