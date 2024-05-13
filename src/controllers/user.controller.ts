@@ -125,7 +125,7 @@ export const deleteUser= async(req:Request, res:Response)=>{
 export const updateUser = async (req: Request, res: Response) => {
 
     const idUser = req.params.id;
-    const { nameUser, lastNameUser, userName} = req.body;
+    const { nameUser, lastNameUser, userName, userRole} = req.body;
 
     const existUser:any = await User.findOne({ where: { dniUser: idUser } });
 
@@ -141,6 +141,7 @@ export const updateUser = async (req: Request, res: Response) => {
                 nameUser: nameUser,
                 lastNameUser: lastNameUser,
                 userName: userName,
+                userRole: userRole
             }, 
             {where:{dniUser:idUser}}
         );

@@ -114,7 +114,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteUser = deleteUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const idUser = req.params.id;
-    const { nameUser, lastNameUser, userName } = req.body;
+    const { nameUser, lastNameUser, userName, userRole } = req.body;
     const existUser = yield user_models_1.User.findOne({ where: { dniUser: idUser } });
     if (!existUser) {
         return res.status(404).json({
@@ -126,6 +126,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             nameUser: nameUser,
             lastNameUser: lastNameUser,
             userName: userName,
+            userRole: userRole
         }, { where: { dniUser: idUser } });
         res.json({
             msg: `El usuario ${existUser.nameUser} ha sido editado satisfactoriamente`

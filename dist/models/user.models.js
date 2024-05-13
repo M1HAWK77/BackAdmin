@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const connection_db_1 = __importDefault(require("../db/connection.db"));
 const sequelize_1 = require("sequelize");
-exports.User = connection_db_1.default.define('user', {
+exports.User = connection_db_1.default.define('usuarios', {
     dniUser: {
         type: sequelize_1.DataTypes.STRING(10),
         primaryKey: true
