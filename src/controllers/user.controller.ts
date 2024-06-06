@@ -58,9 +58,6 @@ export const loginUser= async (req: Request, res:Response) =>{
             msg: `No se encontro un usuario con el nombre: ${userName}`
         })
     }
-
-    //validate password
-                                            //return true or false
     const passwordValidator= await bcrypt.compare(passwordUser, userExist.passwordUser);
 
     if(!passwordValidator){
@@ -71,7 +68,8 @@ export const loginUser= async (req: Request, res:Response) =>{
 
     //generate token 
     const token=jwt.sign({
-        userName: userName
+        userName: userName,
+        userRole: userExist.userRole
     },process.env.SECRET_KEY || 'randomPasswordGenerator345')
 
     res.json(token);

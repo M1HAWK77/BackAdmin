@@ -61,8 +61,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             msg: `No se encontro un usuario con el nombre: ${userName}`
         });
     }
-    //validate password
-    //return true or false
     const passwordValidator = yield bcrypt_1.default.compare(passwordUser, userExist.passwordUser);
     if (!passwordValidator) {
         return res.status(400).json({
@@ -71,7 +69,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     //generate token 
     const token = jsonwebtoken_1.default.sign({
-        userName: userName
+        userName: userName,
+        userRole: userExist.userRole
     }, process.env.SECRET_KEY || 'randomPasswordGenerator345');
     res.json(token);
 });

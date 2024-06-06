@@ -28,7 +28,7 @@ exports.User = connection_db_1.default.define('usuarios', {
         allowNull: false
     },
     userRole: {
-        type: sequelize_1.DataTypes.STRING(10),
+        type: sequelize_1.DataTypes.STRING(20),
         allowNull: true
     }
 });
