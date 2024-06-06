@@ -58,9 +58,6 @@ export const loginUser= async (req: Request, res:Response) =>{
             msg: `No se encontro un usuario con el nombre: ${userName}`
         })
     }
-
-    //validate password
-                                            //return true or false
     const passwordValidator= await bcrypt.compare(passwordUser, userExist.passwordUser);
 
     if(!passwordValidator){
@@ -71,7 +68,8 @@ export const loginUser= async (req: Request, res:Response) =>{
 
     //generate token 
     const token=jwt.sign({
-        userName: userName
+        userName: userName,
+        userRole: userExist.userRole
     },process.env.SECRET_KEY || 'randomPasswordGenerator345')
 
     res.json(token);
@@ -125,7 +123,7 @@ export const deleteUser= async(req:Request, res:Response)=>{
 export const updateUser = async (req: Request, res: Response) => {
 
     const idUser = req.params.id;
-    const { nameUser, lastNameUser, userName} = req.body;
+    const { nameUser, lastNameUser, userName, userRole} = req.body;
 
     const existUser:any = await User.findOne({ where: { dniUser: idUser } });
 
@@ -141,6 +139,7 @@ export const updateUser = async (req: Request, res: Response) => {
                 nameUser: nameUser,
                 lastNameUser: lastNameUser,
                 userName: userName,
+                userRole: userRole
             }, 
             {where:{dniUser:idUser}}
         );

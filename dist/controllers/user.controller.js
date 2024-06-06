@@ -61,8 +61,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             msg: `No se encontro un usuario con el nombre: ${userName}`
         });
     }
-    //validate password
-    //return true or false
     const passwordValidator = yield bcrypt_1.default.compare(passwordUser, userExist.passwordUser);
     if (!passwordValidator) {
         return res.status(400).json({
@@ -71,7 +69,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     //generate token 
     const token = jsonwebtoken_1.default.sign({
-        userName: userName
+        userName: userName,
+        userRole: userExist.userRole
     }, process.env.SECRET_KEY || 'randomPasswordGenerator345');
     res.json(token);
 });
@@ -114,7 +113,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteUser = deleteUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const idUser = req.params.id;
-    const { nameUser, lastNameUser, userName } = req.body;
+    const { nameUser, lastNameUser, userName, userRole } = req.body;
     const existUser = yield user_models_1.User.findOne({ where: { dniUser: idUser } });
     if (!existUser) {
         return res.status(404).json({
@@ -126,6 +125,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             nameUser: nameUser,
             lastNameUser: lastNameUser,
             userName: userName,
+            userRole: userRole
         }, { where: { dniUser: idUser } });
         res.json({
             msg: `El usuario ${existUser.nameUser} ha sido editado satisfactoriamente`

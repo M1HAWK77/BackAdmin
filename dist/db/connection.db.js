@@ -8,7 +8,7 @@ class Connection {
     static getInstance() {
         if (!Connection.instance) {
             // Config DBConnection only once
-            Connection.instance = new sequelize_1.Sequelize('inventoryDB', 'root', '', {
+            Connection.instance = new sequelize_1.Sequelize('mayoristausuarios', 'root', '', {
                 host: 'localhost',
                 dialect: 'mysql'
             });

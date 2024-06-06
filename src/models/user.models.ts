@@ -2,7 +2,7 @@ import connection from '../db/connection.db';
 import { DataTypes } from 'sequelize';
 
 
-export const User = connection.define('user', {
+export const User = connection.define('usuarios', {
     dniUser: {
         type: DataTypes.STRING(10),
         primaryKey: true
@@ -24,7 +24,7 @@ export const User = connection.define('user', {
         allowNull: false
     },
     userRole: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(20),
         allowNull: true
     }
 });
